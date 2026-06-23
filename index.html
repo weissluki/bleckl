@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Schlångate Assn - Block</title>
+    
+    <!-- PWA Verknüpfung -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Theme-Color für die Statusleiste am Smartphone -->
+    <meta name="theme-color" content="#851414">
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --paper-color: #f7f5ee; 
+            --ink-color: #1e293b;   
+            --grid-color: #e2e8f0;  
+            --left-ink: #1d4ed8;    
+            --right-ink: #b91c1c;   
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #d1d5db;
+            color: var(--ink-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            box-sizing: border-box;
+            user-select: none;
+            touch-action: manipulation; 
+        }
+
+        .bleckl {
+            position: relative;
+            width: 100%;
+            max-width: 650px; 
+            height: 100vh;
+            background-color: var(--paper-color);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: 0;
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.2), inset 0 0 20px rgba(0,0,0,0.05);
+            border-top: 15px solid #851414; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 2px solid #cbd5e1;
+            background: rgba(247, 245, 238, 0.9);
+            position: relative;
+            z-index: 10;
+            height: 85px; 
+            box-sizing: border-box;
+        }
+
+        .header-total { 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 2px 10px;
+            border-radius: 4px;
+            transition: background 0.1s;
+            width: 80px;
+        }
+        .header-total:hover { background: rgba(0,0,0,0.05); }
+        .header-total.left { color: var(--left-ink); text-align: left; }
+        .header-total.right { color: var(--right-ink); text-align: right; }
+
+        .header-center { 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+        }
+        .header-center h1 { margin: 0; font-size: 1.1rem; text-transform: uppercase; color: #64748b; height: 20px; }
+        
+        .max-score {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+            color: var(--ink-color);
+            margin-bottom: 4px;
+            height: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            height: 22px;
+        }
+
+        .action-btn {
+            font-size: 0.8rem;
+            color: #64748b;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #fff;
+            transition: opacity 0.15s ease;
+        }
+        .action-btn:hover { background: #f1f5f9; color: var(--ink-color); border-color: #94a3b8; }
+        
+        .action-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            background: #f1f5f9;
+        }
+
+        .content-area {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            overflow: hidden;
+        }
+
+        .svg-layer {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            z-index: 2;
+            margin: auto 0; 
+        }
+
+        .click-zone { fill: transparent; cursor: pointer; }
+        .click-zone:hover { fill: rgba(0, 0, 0, 0.02); }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5; 
+            display: flex;
+            pointer-events: none; 
+        }
+
+        .column {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 15px; 
+            box-sizing: border-box;
+        }
+        
+        .column-left { align-items: flex-start; }
+        .column-right { align-items: flex-end; }
+
+        .interactive-box {
+            height: 45px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto; 
+            display: flex;
+            align-items: center;
+            width: 80px;
+        }
+        .column-left .interactive-box { justify-content: flex-start; }
+        .column-right .interactive-box { justify-content: flex-end; }
+
+        .pbrn-value { color: var(--left-ink); }
+        .column-right .pbrn-value { color: var(--right-ink); }
+        
+        .minus-value { color: var(--left-ink); }
+        .column-right .minus-value { color: var(--right-ink); }
+
+        .snake-line { fill: none; stroke: #475569; stroke-width: 14; stroke-linecap: round; opacity: 0.25; pointer-events: none; }
+        .center-line { stroke: #94a3b8; stroke-width: 1; stroke-dasharray: 8 4; }
+        
+        .tick-mark { stroke-width: 3.5; stroke-linecap: round; filter: drop-shadow(0.5px 0.5px 0px rgba(0,0,0,0.1)); pointer-events: none; }
+        .tick-left { stroke: var(--left-ink); }
+        .tick-right { stroke: var(--right-ink); }
+
+        /* Branding Styles - Für optimale, dezente Lesbarkeit angepasst */
+        .branding-footer {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; 
+            padding: 10px 0; 
+            opacity: 0.55; /* Kontrast erhöht von 0.25 auf 0.55 */
+            font-size: 0.68rem; 
+            letter-spacing: 0.03em; /* Schafft etwas Luft für bessere Erkennbarkeit */
+            color: var(--ink-color);
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            z-index: 10;
+            pointer-events: none; 
+        }
+
+        /* Modals & Popups */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background-color: var(--paper-color);
+            border: 1px solid #475569;
+            border-radius: 4px;
+            padding: 20px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+        }
+        .modal h3 { margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; }
+        .modal p { font-size: 1rem; margin: 0 0 20px 0; line-height: 1.4; }
+        
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px dashed #475569;
+            color: var(--ink-color);
+            font-size: 1.5rem;
+            font-family: inherit;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .modal-buttons { display: flex; gap: 10px; }
+        .btn {
+            flex: 1;
+            padding: 11px; 
+            border: 1px solid #475569;
+            background: transparent;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-confirm { background: var(--ink-color); color: var(--paper-color); }
+        .btn-danger { background: #851414; color: #f7f5ee; border-color: #851414; }
+        
+        .btn-matsch {
+            background: #851414;
+            color: #f7f5ee;
+            border: 1px solid #851414;
+            width: 100%;
+            margin-top: 12px;
+            letter-spacing: 1px;
+        }
+        .btn-matsch:hover { background: #b91c1c; }
+    </style>
+</head>
+<body>
+
+    <div class="bleckl">
+        <header>
+            <div class="header-total left" id="headerTotalLeft" onclick="openPunkteModal('left')">0</div>
+            <div class="header-center">
+                <h1>Schlångate Assn</h1>
+                <div class="max-score" onclick="openMaxScoreModal()"><span id="maxDisplay">1000</span></div>
+                <div class="header-buttons">
+                    <div class="action-btn" id="undoBtn" onclick="undo()">⟲ Zurück</div>
+                    <div class="action-btn" onclick="openResetConfirmModal()">★ Neu</div>
+                </div>
+            </div>
+            <div class="header-total right" id="headerTotalRight" onclick="openPunkteModal('right')">0</div>
+        </header>
+
+        <div class="content-area">
+            <div class="ui-layer">
+                <div class="column column-left">
+                    <div class="interactive-box pbrn-value" id="plusLeft" onclick="openDirectFieldModal('left', 'gute')">+</div>
+                    <div class="interactive-box minus-value" id="minusLeft" onclick="openDirectFieldModal('left', 'schlechte')">-</div>
+                </div>
+                <div class="column column-right">
+                    <div class="interactive-box pbrn-value" id="plusRight" onclick="openDirectFieldModal('right', 'gute')">+</div>
+                    <div class="interactive-box minus-value" id="minusRight" onclick="openDirectFieldModal('right', 'schlechte')">-</div>
+                </div>
+            </div>
+
+            <svg class="svg-layer" viewBox="0 0 460 380" preserveAspectRatio="xMidYMid meet">
+                <line class="center-line" x1="230" y1="0" x2="230" y2="380" />
+
+                <path class="snake-line" d="M 445 60 L 75 60 A 65 65 0 0 0 75 190 L 385 190 A 65 65 0 0 1 385 320 L 15 320" />
+
+                <!-- 100er Zeile -->
+                <rect class="click-zone" x="20" y="15" width="200" height="90" onclick="handleLineClick('left', 100)" />
+                <rect class="click-zone" x="240" y="15" width="200" height="90" onclick="handleLineClick('right', 100)" />
+                
+                <!-- 50er Zeile -->
+                <rect class="click-zone" x="20" y="145" width="200" height="90" onclick="handleLineClick('left', 50)" />
+                <rect class="click-zone" x="240" y="145" width="200" height="90" onclick="handleLineClick('right', 50)" />
+                
+                <!-- 20er Zeile -->
+                <rect class="click-zone" x="20" y="275" width="200" height="90" onclick="handleLineClick('left', 20)" />
+                <rect class="click-zone" x="240" y="275" width="200" height="90" onclick="handleLineClick('right', 20)" />
+
+                <g id="tickGroup"></g>
+            </svg>
+        </div>
+
+        <!-- DEZENTES BRANDING (DURCH ERHÖHTE OPACITY NUN PERFEKT UND EDEL LESBAR) -->
+        <div class="branding-footer">
+            <svg viewBox="0 0 24 24" style="width: 10.5px; height: 10.5px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>luki.weiss</span>
+        </div>
+    </div>
+
+    <!-- POPUPS -->
+    <div class="modal-overlay" id="punkteModal"><div class="modal"><h3 id="modalTitle">Rundenpunkte eintragen</h3><input type="number" id="modalInput" placeholder="z.B. 50" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('punkteModal')">Zurück</button><button class="btn btn-confirm" onclick="submitPoints()">Eintragen</button></div><button class="btn btn-matsch" onclick="submitMatsch()">MATSCH (256)</button></div></div>
+    <div class="modal-overlay" id="directFieldModal"><div class="modal"><h3 id="directFieldTitle">Wert ändern</h3><input type="number" id="directFieldInput" placeholder="Wert" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('directFieldModal')">Zurück</button><button class="btn btn-confirm" onclick="submitDirectField()">Schreiben</button></div></div></div>
+    <div class="modal-overlay" id="maxScoreModal"><div class="modal"><h3>Spielen bis</h3><input type="number" id="maxInput" value="1000" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('maxScoreModal')">Zurück</button><button class="btn btn-confirm" onclick="submitMaxScore()">Speichern</button></div></div></div>
+    <div class="modal-overlay" id="resetConfirmModal"><div class="modal"><h3>Neues Spiel starten?</h3><p>Der aktuelle Spielstand wird dabei komplett gelöscht.</p><div class="modal-buttons"><button class="btn" onclick="closeModal('resetConfirmModal')">Abbrechen</button><button class="btn btn-danger" onclick="confirmResetGame()">Neustart</button></div></div></div>
+    <div class="modal-overlay" id="winnerModal"><div class="modal"><h3 style="font-size: 1.5rem; color: #851414;">Sieg!</h3><p id="winnerMessage" style="font-size: 1.2rem; font-weight: bold; margin-top: 10px;"></p><button class="btn btn-confirm" style="width: 100%;" onclick="confirmResetGame()">Neues Spiel</button></div></div>
+    <div class="modal-overlay" id="errorModal"><div class="modal" style="border-color: #851414;"><h3 style="color: #851414;">Ungültiger Wert</h3><p id="errorMessage">Erlaubt sind nur Punkte von 0 bis 157 oder Matsch (256).</p><button class="btn btn-confirm" onclick="closeModal('errorModal')">OK</button></div></div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registriert!'))
+                    .catch(err => console.error(err));
+            });
+        }
+
+        let maxPoints = 1000;
+        let selectedTeam = 'left';
+        let targetFieldType = 'gute';
+        let teamData = {
+            left: { ticks100: 0, ticks50: 0, ticks20: 0, restPoints: 0 },
+            right: { ticks100: 0, ticks50: 0, ticks20: 0, restPoints: 0 }
+        };
+        let historyStack = [];
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('schlagnate_teamData');
+            const savedMax = localStorage.getItem('schlagnate_maxPoints');
+            const savedHistory = localStorage.getItem('schlagnate_historyStack');
+            if (savedData) teamData = JSON.parse(savedData);
+            if (savedMax) { maxPoints = parseInt(savedMax); document.getElementById('maxDisplay').innerText = maxPoints; }
+            if (savedHistory) historyStack = JSON.parse(savedHistory);
+            updateUndoButtonVisibility();
+            calculateTotals();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('schlagnate_teamData', JSON.stringify(teamData));
+            localStorage.setItem('schlagnate_maxPoints', maxPoints.toString());
+            localStorage.setItem('schlagnate_historyStack', JSON.stringify(historyStack));
+        }
+
+        function saveState() { historyStack.push(JSON.parse(JSON.stringify(teamData))); updateUndoButtonVisibility(); saveToLocalStorage(); }
+        
+        function undo() {
+            if (historyStack.length > 0) {
+                teamData = historyStack.pop();
+                calculateTotals();
+                updateUndoButtonVisibility();
+                saveToLocalStorage();
+            }
+        }
+
+        function updateUndoButtonVisibility() {
+            const undoBtn = document.getElementById('undoBtn');
+            if (historyStack.length > 0) undoBtn.classList.remove('disabled');
+            else undoBtn.classList.add('disabled');
+        }
+
+        function handleLineClick(team, value) { saveState(); teamData[team][`ticks${value}`]++; calculateTotals(); saveToLocalStorage(); }
+
+        function addPointsWithSmartSplit(team, value) {
+            if (value <= 0) return;
+            let bestSplit = { ticks100: 0, ticks50: 0, ticks20: 0, rest: value };
+            let minAbsoluteRest = value;
+            for (let t100 = 0; t100 <= Math.ceil(value / 100); t100++) {
+                for (let t50 = 0; t50 <= 2; t50++) {
+                    for (let t20 = 0; t20 <= 8; t20++) {
+                        let currentSum = (t100 * 100) + (t50 * 50) + (t20 * 20);
+                        let currentRest = value - currentSum;
+                        if (Math.abs(currentRest) < minAbsoluteRest) {
+                            minAbsoluteRest = Math.abs(currentRest);
+                            bestSplit = { ticks100: t100, ticks50: t50, ticks20: t20, rest: currentRest };
+                        }
+                    }
+                }
+            }
+            teamData[team].ticks100 += bestSplit.ticks100;
+            teamData[team].ticks50 += bestSplit.ticks50;
+            teamData[team].ticks20 += bestSplit.ticks20;
+            teamData[team].restPoints += bestSplit.rest;
+        }
+
+        function checkAndSplitOverflow() {
+            ['left', 'right'].forEach(team => {
+                if (teamData[team].restPoints > 20) {
+                    let overflowValue = teamData[team].restPoints;
+                    teamData[team].restPoints = 0; 
+                    addPointsWithSmartSplit(team, overflowValue);
+                }
+            });
+        }
+
+        function calculateTotals() {
+            checkAndSplitOverflow();
+            const tickGroup = document.getElementById('tickGroup');
+            tickGroup.innerHTML = '';
+
+            ['left', 'right'].forEach(team => {
+                let data = teamData[team];
+                let linienSumme = (data.ticks100 * 100) + (data.ticks50 * 50) + (data.ticks20 * 20);
+                let total = linienSumme + data.restPoints;
+                document.getElementById(`headerTotal${capitalize(team)}`).innerText = total;
+
+                const plusEl = document.getElementById(`plus${capitalize(team)}`);
+                const minusEl = document.getElementById(`minus${capitalize(team)}`);
+                
+                if (data.restPoints > 0) { plusEl.innerText = `+${data.restPoints}`; minusEl.innerText = '-'; } 
+                else if (data.restPoints < 0) { plusEl.innerText = '+'; minusEl.innerText = `${data.restPoints}`; } 
+                else { plusEl.innerText = '+'; minusEl.innerText = '-'; }
+
+                render5erTicks(team, 60, data.ticks100);
+                render5erTicks(team, 190, data.ticks50);
+                render5erTicks(team, 320, data.ticks20);
+            });
+            checkWinner();
+        }
+
+        function render5erTicks(team, y, count) {
+            if (count === 0) return;
+            const tickGroup = document.getElementById('tickGroup');
+            let startX = team === 'left' ? 205 : 255;
+            let spacing = team === 'left' ? -9 : 9;
+            let bundleSpacing = team === 'left' ? -48 : 48;
+
+            for (let i = 0; i < count; i++) {
+                let bundleIndex = Math.floor(i / 5);
+                let tickIndexInBundle = i % 5;
+                let baseX = startX + (bundleIndex * bundleSpacing);
+
+                if (tickIndexInBundle < 4) {
+                    let x = baseX + (tickIndexInBundle * spacing);
+                    let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    let randomSlant = (Math.random() - 0.5) * 2;
+                    line.setAttribute("x1", x + randomSlant);
+                    line.setAttribute("y1", y - 12);
+                    line.setAttribute("x2", x - (spacing / 4));
+                    line.setAttribute("y2", y + 14);
+                    line.setAttribute("class", `tick-mark tick-${team}`);
+                    tickGroup.appendChild(line);
+                } else {
+                    let xStart = baseX + (0 * spacing) - (spacing * 0.5);
+                    let xEnd = baseX + (3 * spacing) + (spacing * 0.5);
+                    let crossLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    crossLine.setAttribute("x1", xStart);
+                    crossLine.setAttribute("y1", y + 8);
+                    crossLine.setAttribute("x2", xEnd);
+                    crossLine.setAttribute("y2", y - 8);
+                    crossLine.setAttribute("class", `tick-mark tick-${team}`);
+                    crossLine.setAttribute("style", "stroke-width: 4px;");
+                    tickGroup.appendChild(crossLine);
+                }
+            }
+        }
+
+        function openPunkteModal(team) {
+            selectedTeam = team;
+            document.getElementById('modalInput').value = '';
+            const title = document.getElementById('modalTitle');
+            title.innerText = `Punkte für ${team === 'left' ? 'LINKS' : 'RECHTS'}`;
+            title.style.color = team === 'left' ? 'var(--left-ink)' : 'var(--right-ink)';
+            document.getElementById('punkteModal').classList.add('active');
+            document.getElementById('modalInput').focus();
+        }
+
+        function submitPoints() {
+            const inputVal = parseInt(document.getElementById('modalInput').value);
+            if (isNaN(inputVal) || !((inputVal >= 0 && inputVal <= 157) || inputVal === 256)) {
+                document.getElementById('errorModal').classList.add('active');
+                return;
+            }
+            saveState();
+            teamData[selectedTeam].restPoints += inputVal;
+            if (inputVal !== 256) {
+                let opponentTeam = selectedTeam === 'left' ? 'right' : 'left';
+                let opponentPoints = 157 - inputVal;
+                teamData[opponentTeam].restPoints += opponentPoints;
+            }
+            calculateTotals(); saveToLocalStorage(); closeModal('punkteModal');
+        }
+
+        function submitMatsch() { saveState(); teamData[selectedTeam].restPoints += 256; calculateTotals(); saveToLocalStorage(); closeModal('punkteModal'); }
+
+        function openDirectFieldModal(team, type) {
+            selectedTeam = team; targetFieldType = type;
+            document.getElementById('directFieldInput').value = '';
+            const title = document.getElementById('directFieldTitle');
+            title.innerText = `${capitalize(type)} für ${team === 'left' ? 'LINKS' : 'RECHTS'}`;
+            title.style.color = team === 'left' ? 'var(--left-ink)' : 'var(--right-ink)';
+            document.getElementById('directFieldModal').classList.add('active');
+            document.getElementById('directFieldInput').focus();
+        }
+
+        function submitDirectField() {
+            const inputVal = parseInt(document.getElementById('directFieldInput').value);
+            if (!isNaN(inputVal)) {
+                saveState();
+                if (targetFieldType === 'gute') teamData[selectedTeam].restPoints = Math.abs(inputVal); 
+                else if (targetFieldType === 'schlechte') teamData[selectedTeam].restPoints = -Math.abs(inputVal); 
+                calculateTotals(); saveToLocalStorage();
+            }
+            closeModal('directFieldModal');
+        }
+
+        function openMaxScoreModal() { document.getElementById('maxInput').value = maxPoints; document.getElementById('maxScoreModal').classList.add('active'); }
+        function submitMaxScore() { const inputVal = parseInt(document.getElementById('maxInput').value); if (!isNaN(inputVal) && inputVal > 0) { maxPoints = inputVal; document.getElementById('maxDisplay').innerText = maxPoints; saveToLocalStorage(); } closeModal('maxScoreModal'); }
+        function openResetConfirmModal() { document.getElementById('resetConfirmModal').classList.add('active'); }
+        
+        function confirmResetGame() {
+            closeModal('resetConfirmModal'); closeModal('winnerModal');
+            historyStack = []; updateUndoButtonVisibility();
+            teamData.left = { ticks100: 0, ticks50: 0, ticks20: 0, restPoints: 0 };
+            teamData.right = { ticks100: 0, ticks50: 0, ticks20: 0, restPoints: 0 };
+            calculateTotals(); saveToLocalStorage();
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function checkWinner() {
+            let totalLeft = (teamData.left.ticks100 * 100) + (teamData.left.ticks50 * 50) + (teamData.left.ticks20 * 20) + teamData.left.restPoints;
+            let totalRight = (teamData.right.ticks100 * 100) + (teamData.right.ticks50 * 50) + (teamData.right.ticks20 * 20) + teamData.right.restPoints;
+            if (totalLeft >= maxPoints) showWinnerModal("Team LINKS gwinnt!");
+            else if (totalRight >= maxPoints) showWinnerModal("Team RECHTS gwinnt!");
+        }
+
+        function showWinnerModal(msg) { document.getElementById('winnerMessage').innerText = msg; document.getElementById('winnerModal').classList.add('active'); }
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        loadFromLocalStorage();
+    </script>
+</body>
+</html>
