@@ -1,4 +1,4 @@
-const CACHE_NAME = 'schlagnate-block-v1';
+const CACHE_NAME = 'schlangateassn-bleckl-v2';
 const ASSETS = [
   'index.html',
   'manifest.json',
