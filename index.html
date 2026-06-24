@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Schlångate Assn - Block</title>
     
+    <!-- PWA Verknüpfung -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#851414">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -203,7 +204,6 @@
         .tick-left { stroke: var(--left-ink); }
         .tick-right { stroke: var(--right-ink); }
 
-        /* Branding Styles - Wieder eine Version nach unten korrigiert */
         .branding-footer {
             display: flex; 
             align-items: center; 
@@ -222,7 +222,6 @@
             pointer-events: none; 
         }
 
-        /* Modals & Popups - Flex-Ausrichtung nach oben optimiert für Tastatur-Overlays */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -253,7 +252,7 @@
             text-align: center;
             box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
         }
-        .modal h3 { margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; }
+        .modal h3 { margin: 0 0 5px 0; font-size: 1.1rem; text-transform: uppercase; }
         .modal p { font-size: 1rem; margin: 0 0 20px 0; line-height: 1.4; }
         
         .modal input {
@@ -269,6 +268,20 @@
             box-sizing: border-box;
             margin-bottom: 15px;
             outline: none;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .modal input.input-error {
+            border-bottom-color: #851414;
+            background-color: rgba(133, 20, 20, 0.05);
+            animation: shake 0.2s ease-in-out 0s 2;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
         }
 
         .modal-buttons { display: flex; gap: 10px; }
@@ -332,15 +345,17 @@
 
             <svg class="svg-layer" viewBox="0 0 460 380" preserveAspectRatio="xMidYMid meet">
                 <line class="center-line" x1="230" y1="0" x2="230" y2="380" />
-
                 <path class="snake-line" d="M 445 60 L 75 60 A 65 65 0 0 0 75 190 L 385 190 A 65 65 0 0 1 385 320 L 15 320" />
 
+                <!-- 100er Zeile -->
                 <rect class="click-zone" x="20" y="15" width="200" height="90" onclick="handleLineClick('left', 100)" />
                 <rect class="click-zone" x="240" y="15" width="200" height="90" onclick="handleLineClick('right', 100)" />
                 
+                <!-- 50er Zeile -->
                 <rect class="click-zone" x="20" y="145" width="200" height="90" onclick="handleLineClick('left', 50)" />
                 <rect class="click-zone" x="240" y="145" width="200" height="90" onclick="handleLineClick('right', 50)" />
                 
+                <!-- 20er Zeile -->
                 <rect class="click-zone" x="20" y="275" width="200" height="90" onclick="handleLineClick('left', 20)" />
                 <rect class="click-zone" x="240" y="275" width="200" height="90" onclick="handleLineClick('right', 20)" />
 
@@ -348,6 +363,7 @@
             </svg>
         </div>
 
+        <!-- DEZENTES BRANDING -->
         <div class="branding-footer">
             <svg viewBox="0 0 24 24" style="width: 10.5px; height: 10.5px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -358,12 +374,12 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="punkteModal"><div class="modal"><h3 id="modalTitle">Rundenpunkte eintragen</h3><input type="number" id="modalInput" placeholder="z.B. 50" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('punkteModal')">Zurück</button><button class="btn btn-confirm" onclick="submitPoints()">Eintragen</button></div><button class="btn btn-matsch" onclick="submitMatsch()">MATSCH (256)</button></div></div>
+    <!-- POPUPS -->
+    <div class="modal-overlay" id="punkteModal"><div class="modal"><h3 id="modalTitle">Rundenpunkte eintragen</h3><input type="number" id="modalInput" placeholder="0 - 157" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('punkteModal')">Zurück</button><button class="btn btn-confirm" onclick="submitPoints()">Eintragen</button></div><button class="btn btn-matsch" onclick="submitMatsch()">MATSCH (256)</button></div></div>
     <div class="modal-overlay" id="directFieldModal"><div class="modal"><h3 id="directFieldTitle">Wert ändern</h3><input type="number" id="directFieldInput" placeholder="Wert" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('directFieldModal')">Zurück</button><button class="btn btn-confirm" onclick="submitDirectField()">Schreiben</button></div></div></div>
     <div class="modal-overlay" id="maxScoreModal"><div class="modal"><h3>Spielen bis</h3><input type="number" id="maxInput" value="1000" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('maxScoreModal')">Zurück</button><button class="btn btn-confirm" onclick="submitMaxScore()">Speichern</button></div></div></div>
     <div class="modal-overlay" id="resetConfirmModal"><div class="modal"><h3>Neues Spiel starten?</h3><p>Der aktuelle Spielstand wird dabei komplett gelöscht.</p><div class="modal-buttons"><button class="btn" onclick="closeModal('resetConfirmModal')">Abbrechen</button><button class="btn btn-danger" onclick="confirmResetGame()">Neustart</button></div></div></div>
     <div class="modal-overlay" id="winnerModal"><div class="modal"><h3 style="font-size: 1.5rem; color: #851414;">Sieg!</h3><p id="winnerMessage" style="font-size: 1.2rem; font-weight: bold; margin-top: 10px;"></p><button class="btn btn-confirm" style="width: 100%;" onclick="confirmResetGame()">Neues Spiel</button></div></div>
-    <div class="modal-overlay" id="errorModal"><div class="modal" style="border-color: #851414;"><h3 style="color: #851414;">Ungültiger Wert</h3><p id="errorMessage">Erlaubt sind nur Punkte von 0 bis 157 oder Matsch (256).</p><button class="btn btn-confirm" onclick="closeModal('errorModal')">OK</button></div></div>
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -421,32 +437,37 @@
 
         function addPointsWithSmartSplit(team, value) {
             if (value <= 0) return;
-            let bestSplit = { ticks100: 0, ticks50: 0, ticks20: 0, rest: value };
-            let minAbsoluteRest = value;
-            for (let t100 = 0; t100 <= Math.ceil(value / 100); t100++) {
-                for (let t50 = 0; t50 <= 2; t50++) {
-                    for (let t20 = 0; t20 <= 8; t20++) {
-                        let currentSum = (t100 * 100) + (t50 * 50) + (t20 * 20);
-                        let currentRest = value - currentSum;
-                        if (Math.abs(currentRest) < minAbsoluteRest) {
-                            minAbsoluteRest = Math.abs(currentRest);
-                            bestSplit = { ticks100: t100, ticks50: t50, ticks20: t20, rest: currentRest };
-                        }
-                    }
-                }
-            }
-            teamData[team].ticks100 += bestSplit.ticks100;
-            teamData[team].ticks50 += bestSplit.ticks50;
-            teamData[team].ticks20 += bestSplit.ticks20;
-            teamData[team].restPoints += bestSplit.rest;
+            
+            let remainder = value;
+
+            let t100 = Math.floor(remainder / 100);
+            remainder %= 100;
+
+            let t50 = Math.floor(remainder / 50);
+            remainder %= 50;
+
+            let t20 = Math.floor(remainder / 20);
+            remainder %= 20;
+
+            teamData[team].ticks100 += t100;
+            teamData[team].ticks50 += t50;
+            teamData[team].ticks20 += t20;
+            teamData[team].restPoints += remainder;
         }
 
         function checkAndSplitOverflow() {
             ['left', 'right'].forEach(team => {
-                if (teamData[team].restPoints > 20) {
-                    let overflowValue = teamData[team].restPoints;
-                    teamData[team].restPoints = 0; 
-                    addPointsWithSmartSplit(team, overflowValue);
+                if (teamData[team].restPoints >= 50) {
+                    let largeValue = Math.floor(teamData[team].restPoints / 50) * 50;
+                    teamData[team].restPoints -= largeValue;
+                    addPointsWithSmartSplit(team, largeValue);
+                }
+
+                if (teamData[team].restPoints > 10) {
+                    while (teamData[team].restPoints > 10) {
+                        teamData[team].ticks20 += 1;
+                        teamData[team].restPoints -= 20;
+                    }
                 }
             });
         }
@@ -515,24 +536,30 @@
 
         function openPunkteModal(team) {
             selectedTeam = team;
-            document.getElementById('modalInput').value = '';
+            const input = document.getElementById('modalInput');
+            input.value = '';
+            input.classList.remove('input-error');
             const title = document.getElementById('modalTitle');
             title.innerText = `Punkte für ${team === 'left' ? 'LINKS' : 'RECHTS'}`;
             title.style.color = team === 'left' ? 'var(--left-ink)' : 'var(--right-ink)';
             document.getElementById('punkteModal').classList.add('active');
             
-            setTimeout(() => {
-                const input = document.getElementById('modalInput');
-                input.focus();
-            }, 80);
+            setTimeout(() => { input.focus(); }, 80);
         }
 
         function submitPoints() {
-            const inputVal = parseInt(document.getElementById('modalInput').value);
+            const input = document.getElementById('modalInput');
+            const inputVal = parseInt(input.value);
+            
+            // Validierung: Bleibt offen bei Fehlern, markiert Text rot
             if (isNaN(inputVal) || !((inputVal >= 0 && inputVal <= 157) || inputVal === 256)) {
-                document.getElementById('errorModal').classList.add('active');
+                input.classList.remove('input-error');
+                void input.offsetWidth; // Trigger Reflow für Animation
+                input.classList.add('input-error');
+                input.select();
                 return;
             }
+            
             saveState();
             teamData[selectedTeam].restPoints += inputVal;
             if (inputVal !== 256) {
@@ -547,21 +574,36 @@
 
         function openDirectFieldModal(team, type) {
             selectedTeam = team; targetFieldType = type;
-            document.getElementById('directFieldInput').value = '';
+            const input = document.getElementById('directFieldInput');
+            input.value = '';
+            input.classList.remove('input-error');
+            input.placeholder = type === 'gute' ? "0 - 157" : "0 - 20";
+            
             const title = document.getElementById('directFieldTitle');
             title.innerText = `${capitalize(type)} für ${team === 'left' ? 'LINKS' : 'RECHTS'}`;
             title.style.color = team === 'left' ? 'var(--left-ink)' : 'var(--right-ink)';
             document.getElementById('directFieldModal').classList.add('active');
             
-            setTimeout(() => {
-                const input = document.getElementById('directFieldInput');
-                input.focus();
-            }, 80);
+            setTimeout(() => { input.focus(); }, 80);
         }
 
         function submitDirectField() {
-            const inputVal = parseInt(document.getElementById('directFieldInput').value);
+            const input = document.getElementById('directFieldInput');
+            const inputVal = parseInt(input.value);
+            
             if (!isNaN(inputVal)) {
+                // Validierung: Bei Fehlern offen lassen und rütteln
+                if (targetFieldType === 'gute' && (inputVal < 0 || inputVal > 157)) {
+                    input.classList.remove('input-error'); void input.offsetWidth;
+                    input.classList.add('input-error'); input.select();
+                    return;
+                }
+                if (targetFieldType === 'schlechte' && (inputVal < 0 || inputVal > 20)) {
+                    input.classList.remove('input-error'); void input.offsetWidth;
+                    input.classList.add('input-error'); input.select();
+                    return;
+                }
+
                 saveState();
                 if (targetFieldType === 'gute') teamData[selectedTeam].restPoints = Math.abs(inputVal); 
                 else if (targetFieldType === 'schlechte') teamData[selectedTeam].restPoints = -Math.abs(inputVal); 
