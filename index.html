@@ -206,38 +206,39 @@
         .tick-left { stroke: var(--left-ink); }
         .tick-right { stroke: var(--right-ink); }
 
-        /* Branding Styles - Leicht nach oben verschoben gegen Systemleisten */
+        /* Branding Styles - Deutlich nach oben versetzt */
         .branding-footer {
             display: flex; 
             align-items: center; 
             justify-content: center; 
             gap: 6px; 
-            padding: 10px 0; 
-            padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); /* Schützt vor Home-Bars auf iOS/Android */
+            padding: 5px 0; 
             opacity: 0.55; 
             font-size: 0.68rem; 
             letter-spacing: 0.03em; 
             color: var(--ink-color);
             position: absolute;
-            bottom: 4px; /* Minimal angehoben */
+            bottom: calc(22px + env(safe-area-inset-bottom, 0px)); /* Spürbar höher gesetzt */
             width: 100%;
             z-index: 10;
             pointer-events: none; 
         }
 
-        /* Modals & Popups - Optimiert für Tastatur-Overlays */
+        /* Modals & Popups - Flex-Ausrichtung nach oben optimiert für Tastatur-Overlays */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            height: 100dvh; /* Reagiert auf Tastatur-Resizing */
+            height: 100vh;
+            height: 100dvh; 
             background-color: rgba(0,0,0,0.4);
             z-index: 100;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Modal wandert nach oben statt Mitte */
+            padding-top: 12vh; /* Perfekter Abstand von oben bei offener Tastatur */
+            box-sizing: border-box;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.15s ease;
@@ -253,7 +254,6 @@
             max-width: 320px;
             text-align: center;
             box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
-            margin-bottom: env(keyboard-height, 0px); /* Falls vom Browser unterstützt */
         }
         .modal h3 { margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; }
         .modal p { font-size: 1rem; margin: 0 0 20px 0; line-height: 1.4; }
@@ -528,11 +528,9 @@
             title.style.color = team === 'left' ? 'var(--left-ink)' : 'var(--right-ink)';
             document.getElementById('punkteModal').classList.add('active');
             
-            // Verhindert Layout-Sprünge und scrollt das Modal sanft ins Sichtfeld
             setTimeout(() => {
                 const input = document.getElementById('modalInput');
                 input.focus();
-                input.scrollIntoView({ block: "center", behavior: "smooth" });
             }, 80);
         }
 
@@ -565,7 +563,6 @@
             setTimeout(() => {
                 const input = document.getElementById('directFieldInput');
                 input.focus();
-                input.scrollIntoView({ block: "center", behavior: "smooth" });
             }, 80);
         }
 
