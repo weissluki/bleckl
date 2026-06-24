@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Schlångate Assn - Block</title>
     
-    <!-- PWA Verknüpfung -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#851414">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -58,6 +57,13 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* NUR ALS WEBAPP: Roten Balken entfernen für mehr Platz */
+        @media (display-mode: standalone) {
+            .bleckl {
+                border-top: none;
+            }
         }
 
         header {
@@ -347,15 +353,12 @@
                 <line class="center-line" x1="230" y1="0" x2="230" y2="380" />
                 <path class="snake-line" d="M 445 60 L 75 60 A 65 65 0 0 0 75 190 L 385 190 A 65 65 0 0 1 385 320 L 15 320" />
 
-                <!-- 100er Zeile -->
                 <rect class="click-zone" x="20" y="15" width="200" height="90" onclick="handleLineClick('left', 100)" />
                 <rect class="click-zone" x="240" y="15" width="200" height="90" onclick="handleLineClick('right', 100)" />
                 
-                <!-- 50er Zeile -->
                 <rect class="click-zone" x="20" y="145" width="200" height="90" onclick="handleLineClick('left', 50)" />
                 <rect class="click-zone" x="240" y="145" width="200" height="90" onclick="handleLineClick('right', 50)" />
                 
-                <!-- 20er Zeile -->
                 <rect class="click-zone" x="20" y="275" width="200" height="90" onclick="handleLineClick('left', 20)" />
                 <rect class="click-zone" x="240" y="275" width="200" height="90" onclick="handleLineClick('right', 20)" />
 
@@ -363,7 +366,6 @@
             </svg>
         </div>
 
-        <!-- DEZENTES BRANDING -->
         <div class="branding-footer">
             <svg viewBox="0 0 24 24" style="width: 10.5px; height: 10.5px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -374,7 +376,6 @@
         </div>
     </div>
 
-    <!-- POPUPS -->
     <div class="modal-overlay" id="punkteModal"><div class="modal"><h3 id="modalTitle">Rundenpunkte eintragen</h3><input type="number" id="modalInput" placeholder="0 - 157" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('punkteModal')">Zurück</button><button class="btn btn-confirm" onclick="submitPoints()">Eintragen</button></div><button class="btn btn-matsch" onclick="submitMatsch()">MATSCH (256)</button></div></div>
     <div class="modal-overlay" id="directFieldModal"><div class="modal"><h3 id="directFieldTitle">Wert ändern</h3><input type="number" id="directFieldInput" placeholder="Wert" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('directFieldModal')">Zurück</button><button class="btn btn-confirm" onclick="submitDirectField()">Schreiben</button></div></div></div>
     <div class="modal-overlay" id="maxScoreModal"><div class="modal"><h3>Spielen bis</h3><input type="number" id="maxInput" value="1000" inputmode="numeric"><div class="modal-buttons"><button class="btn" onclick="closeModal('maxScoreModal')">Zurück</button><button class="btn btn-confirm" onclick="submitMaxScore()">Speichern</button></div></div></div>
@@ -551,10 +552,9 @@
             const input = document.getElementById('modalInput');
             const inputVal = parseInt(input.value);
             
-            // Validierung: Bleibt offen bei Fehlern, markiert Text rot
             if (isNaN(inputVal) || !((inputVal >= 0 && inputVal <= 157) || inputVal === 256)) {
                 input.classList.remove('input-error');
-                void input.offsetWidth; // Trigger Reflow für Animation
+                void input.offsetWidth; 
                 input.classList.add('input-error');
                 input.select();
                 return;
@@ -592,7 +592,6 @@
             const inputVal = parseInt(input.value);
             
             if (!isNaN(inputVal)) {
-                // Validierung: Bei Fehlern offen lassen und rütteln
                 if (targetFieldType === 'gute' && (inputVal < 0 || inputVal > 157)) {
                     input.classList.remove('input-error'); void input.offsetWidth;
                     input.classList.add('input-error'); input.select();
