@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Schlångate Assn - Block</title>
     
     <!-- PWA Verknüpfung -->
@@ -32,10 +32,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Hält den Block auf dem PC perfekt zentriert */
             height: 100vh;
+            height: 100dvh; 
             width: 100vw;
-            overflow: hidden;
+            overflow: hidden; /* Verhindert jegliches Scrollen */
             box-sizing: border-box;
             user-select: none;
             touch-action: manipulation; 
@@ -44,8 +45,10 @@
         .bleckl {
             position: relative;
             width: 100%;
-            max-width: 650px; 
-            height: 100vh;
+            max-width: 650px; /* Bleibt auf dem PC schön schmal */
+            height: 100%;
+            max-height: 100vh;
+            max-height: 100dvh; 
             background-color: var(--paper-color);
             background-image: 
                 linear-gradient(var(--grid-color) 1px, transparent 1px),
@@ -69,6 +72,7 @@
             position: relative;
             z-index: 10;
             height: 85px; 
+            flex-shrink: 0; 
             box-sizing: border-box;
         }
 
@@ -146,6 +150,7 @@
             max-height: 100%;
             z-index: 2;
             margin: auto 0; 
+            flex-shrink: 0;
         }
 
         .click-zone { fill: transparent; cursor: pointer; }
@@ -201,16 +206,16 @@
         .tick-left { stroke: var(--left-ink); }
         .tick-right { stroke: var(--right-ink); }
 
-        /* Branding Styles - Für optimale, dezente Lesbarkeit angepasst */
+        /* Branding Styles */
         .branding-footer {
             display: flex; 
             align-items: center; 
             justify-content: center; 
             gap: 6px; 
             padding: 10px 0; 
-            opacity: 0.55; /* Kontrast erhöht von 0.25 auf 0.55 */
+            opacity: 0.55; 
             font-size: 0.68rem; 
-            letter-spacing: 0.03em; /* Schafft etwas Luft für bessere Erkennbarkeit */
+            letter-spacing: 0.03em; 
             color: var(--ink-color);
             position: absolute;
             bottom: 0;
@@ -345,7 +350,7 @@
             </svg>
         </div>
 
-        <!-- DEZENTES BRANDING (DURCH ERHÖHTE OPACITY NUN PERFEKT UND EDEL LESBAR) -->
+        <!-- DEZENTES BRANDING -->
         <div class="branding-footer">
             <svg viewBox="0 0 24 24" style="width: 10.5px; height: 10.5px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
