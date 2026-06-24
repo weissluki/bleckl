@@ -1,12 +1,12 @@
 {
   "name": "Schlångate Assn - Block",
-  "short_name": "Schlångate",
+  "short_name": "Schlångate Assn",
   "description": "Ein digitaler Block zum Mitschreiben für Schlångate Assn",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f7f5ee",
   "theme_color": "#851414",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "icons": [
     {
       "src": "icon-192.png",
