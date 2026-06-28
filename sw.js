@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vinschgerbleckl-v3'; // Version angehoben wegen neuer Struktur
+const CACHE_NAME = 'vinschgerbleckl-v4'; // Version angehoben wegen neuer Struktur
 const ASSETS = [
   '/',                     // Das Hauptverzeichnis selbst
   'index.html',            // Das Hauptmenü
