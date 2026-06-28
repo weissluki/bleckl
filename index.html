@@ -141,5 +141,12 @@
         </div>
     </div>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker registriert.'))
+                .catch(err => console.warn('Service Worker Registrierung fehlgeschlagen:', err));
+        }
+    </script>
 </body>
 </html>
